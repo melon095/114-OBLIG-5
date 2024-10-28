@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from dbexcel import *
 from kgmodel import *
+from typing import List
 
 
 # CRUD metoder
@@ -83,6 +84,8 @@ def insert_soknad(s):
                                      s.tidspunkt_oppstart,
                                      s.brutto_inntekt]],
                 columns=soknad.columns), soknad], ignore_index=True)
+
+    # result = sjekk_soknad(soknad.iloc[0])
     
     return soknad
 
@@ -115,7 +118,6 @@ def select_barn(b_pnr):
     
     
 # --- Skriv kode for select_soknad her
-
 
 # ------------------
 # Update
@@ -195,6 +197,35 @@ ImmutableMultiDict([('navn_forelder_1', 'asdf'),
                    sd.get('brutto_inntekt_husholdning'))
     
     return sok_1
+
+# --- Søknadssjekk ---
+def kalkuler_ledige_plasser(s: Soknad) -> List[Barnehage]:
+    """Kalkulerer og finner barnehager hvor det er ledige plasser med tanke på avslag eller tilbud basert på søknad.
+
+    Args:
+        s (Soknad): Søknad.
+
+    Returns:
+        List[Barnehage]: Liste med barnehager hvor det er ledige plasser.
+    """
+    global barnehage
+
+    fortrinnsrett = s.fr_barnevern or s.fr_sykd_familie or s.fr_sykd_barn or s.fr_annet
+
+    barnehager = barnehage
+    antall_barn = 0
+    
+    if s.barn_1:
+        antall_barn += 1
+        
+    if s.barn_2:
+        antall_barn += 1
+
+    for barnehage in s.barnehager_prioritert:
+        if barnehage.ledige_plasser >= antall_barn:
+            barnehager.append(barnehage)
+        
+    return barnehager
 
 # Testing
 def test_df_to_object_list():

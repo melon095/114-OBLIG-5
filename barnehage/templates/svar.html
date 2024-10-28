@@ -1,12 +1,29 @@
 {% extends 'base.html' %}
-<!-- Skriv inn din kode her for å returnere svar for bruksscenario om svar på en søknad. --> 
+<!-- Skriv inn din kode her for å returnere svar for bruksscenario om svar på en søknad. -->
 {% block content %}
-<table border=1>
-	{% for k,v in data.items() %}
+<table border="1">
+	{% for k,v in data.soknad.items() %}
 	<tr>
 		<th>{{ k }}</th>
 		<td>{{ v }}</td>
 	</tr>
 	{% endfor %}
 </table>
+
+<div>
+	{%if data.ledig|length > 0 %}
+	<th>
+		<h2>Det er ledige plasser for denne søknaden.</h2>
+	</th>
+	{% for k,v in data.ledig.items() %}
+	<tr>
+		<th>{{ k }}</th>
+		<td>{{ v }}</td>
+	</tr>
+	{% endfor %} {% else %}
+	<tr>
+		<td>Beklager, det er ikke ledige plasser for denne søknaden.</td>
+	</tr>
+	{% endif %}
+</div>
 {% endblock %}
