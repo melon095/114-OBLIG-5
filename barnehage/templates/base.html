@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %} {% endblock %} - OBLIG5</title>
-    <style>
-    
-        body {
-          margin-left: 20px;
-          margin-right: 20px;
-        }
-        a:link { color: #0000EE; }
-        a:visited { color: #551A8B; }
-        a:link:active, :visited:active { color: #FF0000; }
+	<head>
+		<meta charset="UTF-8" />
+		<title>{% block title %} {% endblock %} - OBLIG5</title>
+		<style>
+			body {
+				margin-left: 20px;
+				margin-right: 20px;
+			}
+			a:link {
+				color: #0000ee;
+			}
+			a:visited {
+				color: #551a8b;
+			}
+			a:link:active,
+			:visited:active {
+				color: #ff0000;
+			}
 
-        .title {
-            margin: 5px;
-            width: 100%;
-        }
-        /*
+			.title {
+				margin: 5px;
+				width: 100%;
+			}
+			/*
         .content {
             margin: 5px;
             width: 100%;
@@ -27,73 +33,77 @@
         }
         */
 
-        button,
-        input,
-        select,
-        textarea {
-            font-family: inherit;
-            font-size: 100%;
-        }
+			button,
+			input,
+			select,
+			textarea {
+				font-family: inherit;
+				font-size: 100%;
+			}
 
-        input,
-        textarea,
-        select,
-        button {
-            width: 150px;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
+			input,
+			textarea,
+			select,
+			button {
+				width: 150px;
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
 
-        fieldset {
-            position: relative;
-            padding: 2em;
-        }
+			fieldset {
+				position: relative;
+				padding: 2em;
+			}
 
-        legend {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-        }
+			legend {
+				position: absolute;
+				bottom: 0;
+				right: 0;
+			}
 
+			.title a {
+				color: #0000ee;
+				text-decoration: none;
+			}
 
-        .title a {
-            color: #0000EE;
-            text-decoration: none;
-        }
+			nav a {
+				color: #0000ee;
+				font-size: 1em;
+				margin-left: 30px;
+				margin-right: 20px;
+			}
 
-        nav a {
-            color: #0000EE;
-            font-size: 1em;
-            margin-left: 30px;
-            margin-right: 20px;
-            
-        }
-        
-        .center {
-          display: block;
-          margin-left: auto;
-          margin-right: auto;
-          width: 50%;
-        }
+			.center {
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				width: 50%;
+			}
 
-    </style>
-</head>
-<body>
-    
-    <nav>
-        <span>MENY:</span>
-        <a href="{{ url_for('index') }}">Hjem</a>
-        <a href="{{ url_for('behandle') }}">Søk</a>
-        <a href="{{ url_for('barnehager') }}">Barnehager</a>
+			.bg-red {
+				background-color: rgba(255, 000, 000, 0.3);
+			}
 
-        <a href="{{ url_for('commit') }}" style="float: right;"> commit</a>
-        <span style="float: right">ADMIN:</span>
-    </nav>
-    <hr>
-    <div class="content">
-        {% block content %} {% endblock %}
-    </div>
-</body>
+			.bg-green {
+				background-color: rgba(000, 255, 000, 0.3);
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<span>MENY:</span>
+			<a href="{{ url_for('index') }}">Hjem</a>
+			<a href="{{ url_for('behandle') }}">Søk</a>
+			<a href="{{ url_for('barnehager') }}">Barnehager</a>
+
+			<a href="{{ url_for('commit') }}" style="float: right"> commit</a>
+			<a href="{{ url_for('soknader') }}" style="float: right">
+				Søknader</a
+			>
+			<span style="float: right">ADMIN:</span>
+		</nav>
+		<hr />
+		<div class="content">{% block content %} {% endblock %}</div>
+	</body>
 </html>
-

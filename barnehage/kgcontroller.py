@@ -118,6 +118,30 @@ def select_barn(b_pnr):
     
     
 # --- Skriv kode for select_soknad her
+def select_alle_soknader() -> List[Soknad]:
+    """Returnerer en liste med alle søknader definert i databasen dbexcel."""
+    return soknad.apply(lambda r: Soknad(r['sok_id'],
+                                            Foresatt(r['foresatt_1'],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_1']]['foresatt_navn'].iloc[0],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_1']]['foresatt_adresse'].iloc[0],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_1']]['foresatt_tlfnr'].iloc[0],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_1']]['foresatt_pnr'].iloc[0]),
+                                            Foresatt(r['foresatt_2'],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_2']]['foresatt_navn'].iloc[0],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_2']]['foresatt_adresse'].iloc[0],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_2']]['foresatt_tlfnr'].iloc[0],
+                                                        forelder[forelder['foresatt_id'] == r['foresatt_2']]['foresatt_pnr'].iloc[0]),
+                                            Barn(r['barn_1'],
+                                                barn[barn['barn_id'] == r['barn_1']]['barn_pnr'].iloc[0]),
+                                            r['fr_barnevern'],
+                                            r['fr_sykd_familie'],
+                                            r['fr_sykd_barn'],
+                                            r['fr_annet'],
+                                            r['barnehager_prioritert'],
+                                            r['sosken__i_barnehagen'],
+                                            r['tidspunkt_oppstart'],
+                                            r['brutto_inntekt']),
+            axis=1).to_list()
 
 # ------------------
 # Update
@@ -204,13 +228,15 @@ def kalkuler_barnehage_tilbud(sd: Soknad) -> bool:
     if not sd.barnehager_prioritert and har_fortrinnsrett:
         return True
     
-    if sd.barnehager_prioritert:
+    if sd.barnehager_prioritert is not None and sd.barnehager_prioritert is not np.nan:
         global barnehage
         
-        for barnehage_id in sd.barnehager_prioritert:
-            barnehage_id = int(barnehage_id)
+        try:
+            barnehage_id = int(sd.barnehager_prioritert)
             if barnehage[barnehage['barnehage_id'] == barnehage_id]['barnehage_ledige_plasser'].iloc[0] > 0:
                 return True
+        except:
+            return False
 
     return False
 

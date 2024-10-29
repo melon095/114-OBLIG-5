@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block content %}
+
+<div>
+    {% for soknad, tilbud in data %} 
+    
+    <table border="1">
+    {% for attr in soknad.__dict__.keys() %}
+
+        <tr>
+            <th>{{ attr }}</th>
+            <td>{{ soknad.__dict__[attr] }}</td>
+        </tr>
+  {% endfor %} 
+
+    <tr>
+        <th class="bg-red">Er det ledig plass?</th>
+    {% if tilbud %}
+        <td class="bg-green">Ja!</td>
+    {% else %}
+        <td class="bg-red">Nei</td>
+    {% endif %}
+    </tr>
+
+    {% endfor %}
+
+    </table>
+</d>
+
+{% endblock %}
