@@ -1,7 +1,5 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<table border=1>
+{% extends 'base.html' %} {% block content %}
+<table border="1">
 	<tr>
 		<th>Id</th>
 		<th>Navn</th>
@@ -12,7 +10,7 @@
 	<tr>
 		<td>{{ elt.barnehage_id }}</td>
 		<td>{{ elt.barnehage_navn }}</td>
-		<td>{{ elt.barnehage_antall_plasser }}</td>	
+		<td>{{ elt.barnehage_antall_plasser }}</td>
 		<td>{{ elt.barnehage_ledige_plasser }}</td>
 	</tr>
 	{% endfor %}

@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from dbexcel import *
 from kgmodel import *
+from typing import List
 
 
 # CRUD metoder
@@ -83,6 +84,8 @@ def insert_soknad(s):
                                      s.tidspunkt_oppstart,
                                      s.brutto_inntekt]],
                 columns=soknad.columns), soknad], ignore_index=True)
+
+    # result = sjekk_soknad(soknad.iloc[0])
     
     return soknad
 
@@ -115,7 +118,6 @@ def select_barn(b_pnr):
     
     
 # --- Skriv kode for select_soknad her
-
 
 # ------------------
 # Update
@@ -195,6 +197,22 @@ ImmutableMultiDict([('navn_forelder_1', 'asdf'),
                    sd.get('brutto_inntekt_husholdning'))
     
     return sok_1
+
+def kalkuler_barnehage_tilbud(sd: Soknad) -> bool:
+    har_fortrinnsrett = sd.fr_barnevern or sd.fr_sykd_familie or sd.fr_sykd_barn or sd.fr_annet
+    
+    if not sd.barnehager_prioritert and har_fortrinnsrett:
+        return True
+    
+    if sd.barnehager_prioritert:
+        global barnehage
+        
+        for barnehage_id in sd.barnehager_prioritert:
+            barnehage_id = int(barnehage_id)
+            if barnehage[barnehage['barnehage_id'] == barnehage_id]['barnehage_ledige_plasser'].iloc[0] > 0:
+                return True
+
+    return False
 
 # Testing
 def test_df_to_object_list():
