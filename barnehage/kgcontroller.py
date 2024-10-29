@@ -198,34 +198,16 @@ ImmutableMultiDict([('navn_forelder_1', 'asdf'),
     
     return sok_1
 
-# --- Søknadssjekk ---
-def kalkuler_ledige_plasser(s: Soknad) -> List[Barnehage]:
-    """Kalkulerer og finner barnehager hvor det er ledige plasser med tanke på avslag eller tilbud basert på søknad.
-
-    Args:
-        s (Soknad): Søknad.
-
-    Returns:
-        List[Barnehage]: Liste med barnehager hvor det er ledige plasser.
-    """
+def generer_barnehageplass_tilbud(soknad_d: dict) -> List[str]:
     global barnehage
-
-    fortrinnsrett = s.fr_barnevern or s.fr_sykd_familie or s.fr_sykd_barn or s.fr_annet
-
-    barnehager = barnehage
-    antall_barn = 0
     
-    if s.barn_1:
-        antall_barn += 1
-        
-    if s.barn_2:
-        antall_barn += 1
-
-    for barnehage in s.barnehager_prioritert:
-        if barnehage.ledige_plasser >= antall_barn:
-            barnehager.append(barnehage)
-        
-    return barnehager
+    mulig_barnehager = barnehage.copy()
+    
+    for index, row in mulig_barnehager.iterrows():
+        if row['barnehage_ledige_plasser'] <= 0:
+            mulig_barnehager.drop(index, inplace=True)
+            
+    return mulig_barnehager['barnehage_navn'].to_list()
 
 # Testing
 def test_df_to_object_list():

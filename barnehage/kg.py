@@ -5,7 +5,7 @@ from flask import request
 from flask import redirect
 from flask import session
 from kgmodel import (Foresatt, Barn, Soknad, Barnehage)
-from kgcontroller import (form_to_object_soknad, insert_soknad, commit_all, select_alle_barnehager, kalkuler_ledige_plasser)
+from kgcontroller import (form_to_object_soknad, generer_barnehageplass_tilbud, insert_soknad, commit_all, select_alle_barnehager)
 
 app = Flask(__name__)
 app.secret_key = 'BAD_SECRET_KEY' # nødvendig for session
@@ -29,11 +29,10 @@ def behandle():
         obj = form_to_object_soknad(sd)
         
         log = insert_soknad(obj)
-        ledig = kalkuler_ledige_plasser(obj)
         
         print(log)
         
-        session['information'] = { "soknad": sd, "ledig": ledig }
+        session['information'] = sd
 
         return redirect(url_for('svar')) #[1]
     else:
@@ -42,7 +41,8 @@ def behandle():
 @app.route('/svar')
 def svar():
     information = session['information']
-    return render_template('svar.html', data=information)
+    tilbud = generer_barnehageplass_tilbud(information)
+    return render_template('svar.html', data=information, tilbud=tilbud)
 
 @app.route('/commit')
 def commit():
