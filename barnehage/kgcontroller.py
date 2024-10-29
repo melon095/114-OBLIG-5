@@ -198,16 +198,21 @@ ImmutableMultiDict([('navn_forelder_1', 'asdf'),
     
     return sok_1
 
-def generer_barnehageplass_tilbud(soknad_d: dict) -> List[str]:
-    global barnehage
+def kalkuler_barnehage_tilbud(sd: Soknad) -> bool:
+    har_fortrinnsrett = sd.fr_barnevern or sd.fr_sykd_familie or sd.fr_sykd_barn or sd.fr_annet
     
-    mulig_barnehager = barnehage.copy()
+    if not sd.barnehager_prioritert and har_fortrinnsrett:
+        return True
     
-    for index, row in mulig_barnehager.iterrows():
-        if row['barnehage_ledige_plasser'] <= 0:
-            mulig_barnehager.drop(index, inplace=True)
-            
-    return mulig_barnehager['barnehage_navn'].to_list()
+    if sd.barnehager_prioritert:
+        global barnehage
+        
+        for barnehage_id in sd.barnehager_prioritert:
+            barnehage_id = int(barnehage_id)
+            if barnehage[barnehage['barnehage_id'] == barnehage_id]['barnehage_ledige_plasser'].iloc[0] > 0:
+                return True
+
+    return False
 
 # Testing
 def test_df_to_object_list():

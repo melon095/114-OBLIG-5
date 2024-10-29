@@ -11,19 +11,10 @@
 </table>
 
 <div>
-	{%if tilbud|length == 0 %}
-	<h2>Det er ledige plasser for denne søknaden.</h2>
+	{%if har_barnehage_tilbud %}
+	<h2>Gratulerer! Du har fått barnehageplass!</h2>
 	{% else %}
-	<table border="1">
-		<th>
-			<p>Tilgjengelige tilbud</p>
-		</th>
-		{% for b in tilbud %}
-		<tr>
-			<td>{{ b }}</td>
-		</tr>
-		{% endfor %}
-	</table>
+	<h2>Desverre, det er ingen ledige plasser for ditt barn.</h2>
 	{% endif %}
 </div>
 {% endblock %}
