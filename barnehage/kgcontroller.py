@@ -154,12 +154,21 @@ def select_alle_soknader() -> List[Soknad]:
 # ----- Persistent lagring ------
 def commit_all():
     """Skriver alle dataframes til excel"""
+    result = {
+        'foresatt': forelder,
+        'barnehage': barnehage,
+        'barn': barn,
+        'soknad': soknad
+    }
+    
     with pd.ExcelWriter('kgdata.xlsx', mode='a', if_sheet_exists='replace') as writer:  
         forelder.to_excel(writer, sheet_name='foresatt')
         barnehage.to_excel(writer, sheet_name='barnehage')
         barn.to_excel(writer, sheet_name='barn')
         soknad.to_excel(writer, sheet_name='soknad')
-        
+
+    return result
+
 # --- Diverse hjelpefunksjoner ---
 def form_to_object_soknad(sd):
     """sd - formdata for soknad, type: ImmutableMultiDict fra werkzeug.datastructures

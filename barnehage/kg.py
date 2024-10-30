@@ -49,8 +49,8 @@ def svar():
 
 @app.route('/commit')
 def commit():
-    commit_all()
-    return render_template('commit.html')
+    result = commit_all()
+    return render_template('commit.html', data=result)
 
 @app.route("/soknader")
 def soknader():
