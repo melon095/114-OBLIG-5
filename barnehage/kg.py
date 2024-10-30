@@ -1,11 +1,11 @@
-from flask import Flask
-from flask import url_for
-from flask import render_template
-from flask import request
-from flask import redirect
-from flask import session
+import altair as alt
+from flask import (Flask, url_for, render_template, request, redirect, session)
+from markupsafe import Markup
+from io import StringIO
 from kgmodel import (Foresatt, Barn, Soknad, Barnehage)
-from kgcontroller import (form_to_object_soknad, kalkuler_barnehage_tilbud, insert_soknad, commit_all, select_alle_barnehager, select_alle_soknader)
+from kgcontroller import (form_to_object_soknad, kalkuler_barnehage_tilbud, insert_soknad, commit_all, select_alle_barnehager, select_alle_soknader, hent_barnehage_statistikk)
+
+alt.renderers.enable('html')
 
 app = Flask(__name__)
 app.secret_key = 'BAD_SECRET_KEY' # nødvendig for session
@@ -59,6 +59,31 @@ def soknader():
     
     return render_template('soknader.html', data=zip(soknader, barnehage_tilbud))
 
+@app.route("/statistikk", methods=['GET', 'POST'])
+def statistikk():
+    kommune = request.form.get('kommune', None)
+    html = None
+
+    if kommune is not None:
+        try:
+            s = hent_barnehage_statistikk(kommune)
+            s = s.melt(id_vars=['Kommune'], var_name='År', value_name='Antall')
+
+            chart = alt.Chart(s).mark_bar().encode(
+                x="År:Q",
+                y=alt.Y("Antall:Q", scale=alt.Scale(domain=(0, 100))),
+                color="Kommune:N",
+            )
+            
+            io = StringIO()
+            chart.save(io, format="html", inline=True)
+            
+            html = io.getvalue()
+        except Exception as e:
+            s = None
+            html = str(e)
+    
+    return render_template('statistikk.html', html=Markup(html), kommune=kommune)
 
 """
 Referanser

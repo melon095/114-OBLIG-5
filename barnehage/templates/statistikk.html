@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block content %}
+<div>
+	<h2>Statistikk</h2>
+
+	<form method="post">
+		<label for="kommune">Navn på Kommune:</label>
+		<input type="text" id="kommune" name="kommune" required />
+		<button type="submit">Søk</button>
+	</form>
+
+	{% if html and kommune %}
+	<h3>Prosentandel for barn i {{ kommune.capitalize() }}</h3>
+	<div>{{ html | safe }}</div>
+	{% endif %}
+</div>
+{% endblock %}

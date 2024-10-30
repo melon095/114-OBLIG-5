@@ -4,6 +4,8 @@ import numpy as np
 from dbexcel import *
 from kgmodel import *
 from typing import List
+from pathlib import Path
+from pandas import DataFrame
 
 
 # CRUD metoder
@@ -248,6 +250,31 @@ def kalkuler_barnehage_tilbud(sd: Soknad) -> bool:
             return False
 
     return False
+
+def hent_barnehage_statistikk(kommune: str) -> DataFrame:
+    FIL_NAVN = Path(__file__).parent / "ssb-barnehager-2015-2023-alder-1-2-aar.xlsm"
+    DATA_KOLONNER = ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
+
+    def hent_data() -> DataFrame:
+
+        excel = pd.read_excel(FIL_NAVN, 
+                            sheet_name="KOSandel120000", 
+                            header=3, 
+                            names=["Kommune", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"],
+                            na_values=[".", ".."])
+
+        return rens_data(excel)
+
+    def rens_data(data: DataFrame) -> DataFrame:
+        data[DATA_KOLONNER] = data[DATA_KOLONNER].map(lambda verdi: np.nan if verdi > 100 else verdi)
+        data[DATA_KOLONNER] = data[DATA_KOLONNER].map(lambda verdi: round(verdi, 2))
+        data = data.drop(data.index[730:])
+        data = data.dropna()
+
+        return data
+    
+    liste = hent_data()
+    return liste[liste["Kommune"] == kommune]
 
 # Testing
 def test_df_to_object_list():
